@@ -1,0 +1,64 @@
+<j:jelly xmlns:j="jelly:core"
+         xmlns:f="/lib/form">
+    <f:section title="Artifactory">
+        <f:entry title="Artifactory servers"
+                 description="List of Artifactory servers that projects will want to deploy artifacts and build info to">
+            <f:repeatable name="artifactoryServer" var="server" items="${descriptor.artifactoryServers}"
+                          header="Artifactory">
+                <input type="hidden" name="stapler-class" value="org.jfrog.hudson.plugins.artifactory.config.ArtifactoryServer"/>
+                <input type="hidden" name="serverId" value="${server.name}"/>
+                <table width="100%">
+                    <f:entry title="URL" help="/plugin/artifactory/help/ArtifactoryServer/help-url.html" field="url">
+                        <f:textbox name="artifactory.url" value="${server.url}"/>
+                    </f:entry>
+
+                    <j:set var="deployerCredentials" value="${server.deployerCredentials}"/>
+                    <f:section title="Default Deployer Credentials" name="deployerCredentials">
+                        <input type="hidden" name="stapler-class" value="org.jfrog.hudson.plugins.artifactory.config.Credentials"/>
+                        <f:entry title="User Name" help="/plugin/artifactory/help/ArtifactoryServer/help-userName.html"
+                                 field="username">
+                            <f:textbox value="${deployerCredentials.username}"/>
+                        </f:entry>
+                        <f:entry title="Password" help="/plugin/artifactory/help/ArtifactoryServer/help-password.html"
+                                 field="password">
+                            <f:password value="${deployerCredentials.password}"/>
+                        </f:entry>
+                    </f:section>
+
+                    <j:set var="resolverCredentials" value="${server.resolverCredentials}"/>
+                    <f:optionalBlock name="resolverCredentials" checked="${resolverCredentials != null}"
+                                     title="Use Different Resolver Credentials"
+                                     help="/plugin/artifactory/help/ArtifactoryServer/help-resolverCredentials.html">
+                        <input type="hidden" name="stapler-class" value="org.jfrog.hudson.plugins.artifactory.config.Credentials"/>
+                        <f:entry title="User Name"
+                                 help="/plugin/artifactory/help/ArtifactoryServer/help-resolverUserName.html"
+                                 field="username">
+                            <f:textbox value="${resolverCredentials.username}"/>
+                        </f:entry>
+                        <f:entry title="Password" field="password"
+                                 help="/plugin/artifactory/help/ArtifactoryServer/help-resolverPassword.html">
+                            <f:password value="${resolverCredentials.password}"/>
+                        </f:entry>
+                    </f:optionalBlock>
+
+                    <f:advanced>
+                        <f:entry title="Connection Timeout"
+                                 help="/plugin/artifactory/help/ArtifactoryServer/help-timeout.html">
+                            <f:textbox clazz="number" name="artifactory.timeout" value="${server.timeout}"/>
+                        </f:entry>
+                        <f:entry name="artifactory.bypassProxy"
+                                 help="/plugin/artifactory/help/ArtifactoryServer/help-bypassproxy.html">
+                            <f:checkbox name="artifactory.bypassProxy" checked="${server.bypassProxy}"/>
+                            <label class="attach-previous">${%Bypass HTTP Proxy}</label>
+                        </f:entry>
+                    </f:advanced>
+                    <f:entry title="">
+                        <div align="right">
+                            <f:repeatableDeleteButton/>
+                        </div>
+                    </f:entry>
+                </table>
+            </f:repeatable>
+        </f:entry>
+    </f:section>
+</j:jelly>
